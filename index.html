@@ -3,20 +3,15 @@
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>Погода</title>
-		<link rel="stylesheet" href="./style.css" />
+		<title>Post Search</title>
+		<link rel="stylesheet" href="style.css" />
 	</head>
 	<body>
-		<h1>Погода в Києві</h1>
-		<div id="weather-data">
-			<p>Температура: <span id="temperature"></span>°C</p>
-			<p>Тиск: <span id="pressure"></span> hPa</p>
-			<p>Опис: <span id="description"></span></p>
-			<p>Вологість: <span id="humidity"></span>%</p>
-			<p>Швидкість вітру: <span id="wind-speed"></span> м/с</p>
-			<p>Напрям вітру: <span id="wind-direction"></span>°</p>
-			<img id="weather-icon" src="" alt="weather icon" />
+		<div class="container">
+			<input type="number" id="postId" />
+			<button class="search-btn">Знайти пост по id</button>
+			<div id="postContainer"></div>
 		</div>
+		<script src="main.js"></script>
 	</body>
-	<script src="./main.js"></script>
 </html>

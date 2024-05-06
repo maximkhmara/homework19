@@ -1,19 +1,70 @@
-fetch(
-	'http://api.openweathermap.org/data/2.5/weather?q=KYIV&units=metric&APPID=5d066958a60d315387d9492393935c19'
-)
-	.then((response) => response.json())
-	.then((data) => {
-		document.getElementById('temperature').textContent = data.main.temp;
-		document.getElementById('pressure').textContent = data.main.pressure;
-		document.getElementById('description').textContent =
-			data.weather[0].description;
-		document.getElementById('humidity').textContent = data.main.humidity;
-		document.getElementById('wind-speed').textContent = data.wind.speed;
-		document.getElementById('wind-direction').textContent = data.wind.deg;
-		document.getElementById(
-			'weather-icon'
-		).src = `http://openweathermap.org/img/w/${data.weather[0].icon}.png`;
-	})
-	.catch((error) => {
-		console.error('Error:', error);
-	});
+document.querySelector('.search-btn').addEventListener('click', function () {
+	let postId = document.querySelector('#postId').value;
+
+	if (postId < 1 || postId > 100) {
+		alert('Введіть id поста від 1 до 100');
+		return;
+	}
+
+	fetch(`https://jsonplaceholder.typicode.com/posts/${postId}`)
+		.then((response) => {
+			if (!response.ok) {
+				throw new Error('Post not found.');
+			}
+			return response.json();
+		})
+		.then((post) => {
+			let postContainer = document.getElementById('postContainer');
+			postContainer.innerHTML = '';
+
+			let postTitle = document.createElement('h2');
+			postTitle.textContent = `Пост: ${post.id}`;
+			let postHeading = document.createElement('h3');
+			postHeading.textContent = `Заголовок: ${post.title}`;
+			let postBody = document.createElement('p');
+			postBody.textContent = post.body;
+			let commentsBtn = document.createElement('button');
+			commentsBtn.textContent = 'Завантажити коментарі до поста';
+			let commentsContainer = document.createElement('div');
+
+			postContainer.append(
+				postTitle,
+				postHeading,
+				postBody,
+				commentsBtn,
+				commentsContainer
+			);
+
+			commentsBtn.addEventListener('click', function () {
+				fetch(`https://jsonplaceholder.typicode.com/comments?postId=${postId}`)
+					.then((response) => response.json())
+					.then((comments) => {
+						commentsContainer.innerHTML = '';
+						let commentsTitle = document.createElement('h3');
+						commentsTitle.textContent = 'Коментарі';
+						commentsContainer.appendChild(commentsTitle);
+						comments.forEach((comment) => {
+							let commentDiv = document.createElement('div');
+							let commentName = document.createElement('h4');
+							commentName.textContent = `Ім'я: ${comment.name}`;
+							let commentEmail = document.createElement('p');
+							commentEmail.textContent = `Email: ${comment.email}`;
+							let commentBody = document.createElement('p');
+							commentBody.textContent = comment.body;
+							commentDiv.appendChild(commentName);
+							commentDiv.appendChild(commentEmail);
+							commentDiv.appendChild(commentBody);
+							commentsContainer.appendChild(commentDiv);
+						});
+					})
+					.catch((error) => {
+						alert('Помилка при завантаженні коментарів.');
+						console.error(error);
+					});
+			});
+		})
+		.catch((error) => {
+			alert('Сервер не відповідає');
+			console.error(error);
+		});
+});
